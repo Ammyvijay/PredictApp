@@ -1,0 +1,29 @@
+import sys
+from logger import CustomLogger
+
+
+def error_message_detail(error, error_detail: sys) -> str:
+    _, _, exc_tb = error_detail.exc_info()
+    file_name = exc_tb.tb_frame.f_code.co_filename
+    line_num = exc_tb.tb_lineno
+    error_message = "Error occured in python script name [{0}] line number [{1}] error message [{2}]".format(
+        file_name, line_num, str(error)
+    )
+    log.logginginfo(error_message)
+    return error_message
+
+class CustomException(Exception):
+    def __init__(self, error_message, error_detail) -> None:
+        super().__init__(error_message)
+        self.error_message = error_message_detail(
+            error_message, error_detail=error_detail)
+    def __str__(self) -> str:
+        return self.error_message
+
+if __name__ == "__main__":
+    log = CustomLogger()
+    try:
+        a = 1//0
+    except Exception as e:
+        log.logginginfo("Error@ Divide by Zero Exception ", e)
+        raise CustomException(e, sys)
